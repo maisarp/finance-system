@@ -1,6 +1,8 @@
 ﻿import uvicorn
 from fastapi import FastAPI
 from sqlalchemy import create_engine, text
+import dotenv
+import os
 
 # 1. Inicializa a API
 app = FastAPI(
@@ -10,7 +12,7 @@ app = FastAPI(
 )
 
 # Configuração do Banco de Dados (SQL Server)
-CONNECTION_STRING = {SQL_SERVER_CONNECTION_STRING}
+SQL_SERVER_CONNECTION_STRING = os.getenv("SQL_SERVER_CONNECTION_STRING")
 
 # 2. Rota Raiz (Só para testar se a API está viva)
 @app.get("/")
@@ -21,7 +23,7 @@ def read_root():
 @app.get("/dividas-yasmin")
 def get_yasmin_debts():
     try:
-        engine = create_engine(CONNECTION_STRING)
+        engine = create_engine(SQL_SERVER_CONNECTION_STRING)
         with engine.connect() as connection:
             # Query SQL
             query = text("""
@@ -48,7 +50,6 @@ def get_yasmin_debts():
     except Exception as e:
         return {"erro": str(e)}
 
-# 4. O "Pulo do Gato" para rodar no Visual Studio
 if __name__ == "__main__":
     # Roda o servidor na porta 8000
     uvicorn.run(app, host="127.0.0.1", port=8000)
