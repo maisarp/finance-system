@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from sqlalchemy import create_engine, text
 import dotenv
 import os
+from config.db_config import AZURE_DB_CONNECTION_STRING
 
 # 1. Inicializa a API
 app = FastAPI(
@@ -10,9 +11,6 @@ app = FastAPI(
     description="Backend para controle de gastos pessoais e cartões",
     version="1.0.0"
 )
-
-# Configuração do Banco de Dados (SQL Server)
-SQL_SERVER_CONNECTION_STRING = os.getenv("SQL_SERVER_CONNECTION_STRING")
 
 # 2. Rota Raiz (Só para testar se a API está viva)
 @app.get("/")
@@ -23,7 +21,7 @@ def read_root():
 @app.get("/dividas-yasmin")
 def get_yasmin_debts():
     try:
-        engine = create_engine(SQL_SERVER_CONNECTION_STRING)
+        engine = create_engine(AZURE_DB_CONNECTION_STRING)
         with engine.connect() as connection:
             # Query SQL
             query = text("""
